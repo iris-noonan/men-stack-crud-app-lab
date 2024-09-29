@@ -1,6 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
+const methodOverride = require('method-override')
 require('dotenv/config')
 
 // ! -- Models
@@ -11,6 +12,7 @@ const app = express()
 const port = 3000
 
 // ! -- Middleware
+app.use(methodOverride('_method'))
 app.use(express.urlencoded({ extended: false}))
 app.use(express.static('public'))
 app.use(morgan('dev'))
@@ -22,9 +24,37 @@ app.get('/', (req, res) => {
   res.render('index.ejs')
 })
 
+// * Index Page
+app.get('/planets', async (req, res) => {
+  try {
+    const planets = await Planet.find()
+    console.log(planets)
+    return res.render('planets/index.ejs', {planets})
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send('<h1>An error occurred.<h1>')
+  }
+})
+
 // * New Page (form page)
 app.get('/planets/new', (req, res) => {
   res.render('planets/new.ejs')
+})
+
+// * Show Page
+app.get('/planets/:planetId', async (req, res, next) => {
+  try {
+    if (mongoose.Types.ObjectId.isValid(req.params.planetId)) {
+      const planet = await Planet.findById(req.params.planetId)
+      if (!planet) return next()
+      return res.render('planets/show.ejs', { planet })
+    } else {
+      next()
+    }
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send('<h1>An error occurred.<h1>')
+  }
 })
 
 // * Create Route
@@ -44,9 +74,51 @@ app.post('/planets', async (req, res) => {
   }
 })
 
+// * Delete
+app.delete('/planets/:planetId', async (req, res) => {
+  try {
+    const deletedPlanet = await Planet.findByIdAndDelete(req.params.planetId)
+    return res.redirect('/planets')
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send('<h1>An error occurred.<h1>')
+  }
+})
+
+
+// * Edit
+
+app.get('/planets/:planetId/edit', async (req, res) => {
+  try {
+    if (mongoose.Types.ObjectId.isValid(req.params.planetId)) {
+      const planet = await Planet.findById(req.params.planetId)
+      if (!planet) return next()
+      return res.render('planets/edit.ejs', { planet })
+    } else {
+      next()
+    }
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send('<h1>An error occurred.<h1>')
+  }
+});
+
+app.put('/planets/:planetId', async (req, res) => {
+  try {
+    req.body.hasMoon = !!req.body.hasMoon
+    const updatedPlanet = await Planet.findByIdAndUpdate(req.params.planetId, req.body)
+    console.log(updatedPlanet)
+    return res.redirect(`/planets/${updatedPlanet._id}`)
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send('<h1>An error occurred.<h1>')
+  }
+})
+
+
 // ! -- 404
 app.get('*', (req, res) => {
-    return res.send('Page not found')
+    return res.status(404).render('planets/404.ejs')
 })
 
 // ! -- Server Connections

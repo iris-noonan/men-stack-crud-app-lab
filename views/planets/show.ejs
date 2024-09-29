@@ -1,0 +1,28 @@
+<!-- views/fruits/show.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= planet.name %></title> <!-- Dynamic title based on fruit name -->
+    <link rel="stylesheet" href="/stylesheets/style.css">
+  </head>
+  <body>
+    <h1><%= planet.name %></h1> <!-- Display fruit name -->
+    <!-- Add more details about the fruit here -->
+    <% if (planet.hasMoon) { %>
+        <p>This planet has at least one moon 🌑!</p>
+    <% } else { %>
+        <p>This planet is moonless 🙁</p>
+    <% } %>
+    <!-- new delete button -->
+    <form action="/planets/<%=planet._id%>?_method=DELETE" method="POST">
+    <button type="submit">Delete <%= planet.name %></button>
+    </form>
+    <!-- add edit page link here -->
+    <a href="/planets/<%= planet._id %>/edit">Edit <%= planet.name %></a>
+    <!-- link to index -->
+    <a href="/planets/">Back to Planets</a>
+  </body>
+</html>
