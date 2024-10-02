@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 <body>
+    <%- include('../partials/_nav') %>
     <h1>All Planets</h1>
     <ul>
         <% planets.forEach(planet => { %>
@@ -16,5 +17,6 @@
         <% }) %>
     </ul>
     <a href="/planets/new">Add New Planet</a>
+    <a href="/auth/sign-in">sign in</a>
 </body>
 </html>

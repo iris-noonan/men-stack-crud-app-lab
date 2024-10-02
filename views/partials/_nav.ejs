@@ -1,0 +1,14 @@
+<nav>
+    <img src="/images/logo.jpg" width="80px" alt="Planet App Logo">
+    <ul>
+      <li><a href="/planets">View all planets</a></li>
+      
+      <% if (user) { %>
+        <li><a href="/planets/new">Create planet</a></li>
+        <li><a href="/auth/sign-out">Sign Out</a></li>
+      <% } else { %>
+        <li><a href="/auth/sign-up">Sign Up</a></li>
+        <li><a href="/auth/sign-in">Sign In</a></li>
+      <% } %>
+    </ul>
+  </nav>

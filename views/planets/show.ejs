@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
   </head>
   <body>
+    <%- include('../partials/_nav') %>
     <h1><%= planet.name %></h1> <!-- Display fruit name -->
     <!-- Add more details about the fruit here -->
     <% if (planet.hasMoon) { %>
@@ -16,13 +17,18 @@
     <% } else { %>
         <p>This planet is moonless 🙁</p>
     <% } %>
-    <!-- new delete button -->
-    <form action="/planets/<%=planet._id%>?_method=DELETE" method="POST">
-    <button type="submit">Delete <%= planet.name %></button>
-    </form>
-    <!-- add edit page link here -->
-    <a href="/planets/<%= planet._id %>/edit">Edit <%= planet.name %></a>
-    <!-- link to index -->
-    <a href="/planets/">Back to Planets</a>
+    <%= planet.owner._id %> |||| <%= user._id %>
+    <% if (planet.owner._id.equals(user._id)) { %>
+      <div class="planet-btns">
+        <!-- new delete button -->
+        <form action="/planets/<%=planet._id%>?_method=DELETE" method="POST">
+        <button type="submit">Delete <%= planet.name %></button>
+        </form>
+        <!-- add edit page link here -->
+        <a href="/planets/<%= planet._id %>/edit">Edit <%= planet.name %></a>
+        <!-- link to index -->
+        <a href="/planets/">Back to Planets</a>
+      </div>
+    <% } %>
   </body>
 </html>
